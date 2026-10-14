@@ -443,6 +443,7 @@ function addMediaLink(url, label) {
     document.getElementById("mediaResults").appendChild(a);
   } catch {}
 }
+
 async function processDownload() {
   const url = document.getElementById("mediaUrl").value.trim();
   const format = document.getElementById("mediaFormat").value;
@@ -450,12 +451,89 @@ async function processDownload() {
   const status = document.getElementById("mediaStatus");
   const results = document.getElementById("mediaResults");
   const btn = document.getElementById("mediaDownloadBtn");
+
   results.replaceChildren();
 
   if (!validMediaUrl(url)) {
     status.textContent = "Masukkan link HTTPS YouTube atau TikTok yang valid.";
     return;
   }
+
+  btn.disabled = true;
+  status.textContent = "Sedang memproses link melalui Vercel...";
+
+  try {
+    const params = new URLSearchParams({ url, format, quality });
+    const endpoint =
+      "https://landada-tools-men.vercel.app/api/download?" +
+      params.toString();
+
+    const response = await fetch(endpoint);
+    const data = await response.json();
+
+    if (!response.ok || data.success === false) {
+      throw new Error(data.error || "Backend gagal memproses link.");
+    }
+
+    const links = [];
+
+    // Format hasil dari backend SaveAPI.
+    if (Array.isArray(data.medias)) {
+      data.medias.forEach(item => {
+        if (item && item.url) {
+          links.push({
+            url: item.url,
+            label: "⬇️ Download " +
+              (item.label || item.quality || format.toUpperCase())
+          });
+        }
+      });
+    }
+
+    // Hasil yang langsung menyediakan satu URL unduhan.
+    if (data.url || data.download_url) {
+      links.push({
+        url: data.url || data.download_url,
+        label: "⬇️ Download " + format.toUpperCase()
+      });
+    }
+
+    // Format picker yang mungkin dikembalikan API.
+    if (Array.isArray(data.picker)) {
+      data.picker.forEach((item, i) => {
+        if (item && item.url) {
+          links.push({
+            url: item.url,
+            label: "⬇️ Pilihan download " + (i + 1)
+          });
+        }
+      });
+    }
+
+    // Jangan tampilkan tautan ganda.
+    const uniqueLinks = [
+      ...new Map(links.map(item => [item.url, item])).values()
+    ];
+
+    uniqueLinks.forEach(item => addMediaLink(item.url, item.label));
+
+    if (results.childElementCount > 0) {
+      status.textContent =
+        "Link tersedia! Tekan tombol download untuk melanjutkan.";
+    } else {
+      status.textContent =
+        "Info berhasil diterima, tetapi link unduhan belum tersedia. " +
+        "Periksa format respons SaveAPI.";
+      console.log("Respons backend:", data);
+    }
+  } catch (error) {
+    status.textContent =
+      "Belum berhasil: " + (error.message || "Periksa koneksi backend.");
+  } finally {
+    btn.disabled = false;
+  }
+}
+  
 
   btn.disabled = true;
   status.textContent = "Sedang menghubungi backend...";
