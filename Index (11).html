@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b16">
+<title>Landada Tools Men</title>
+<style>
+:root {
+  --bg:#080b16; --panel:#11182a; --line:#263550;
+  --text:#edf4ff; --muted:#9aaac5; --cyan:#45f3ff;
+  --purple:#a879ff; --green:#62ffad; --red:#ff6b87;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; background:radial-gradient(ellipse at top,#172044 0,#080b16 55%);
+  color:var(--text); font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+}
+header { padding:30px 16px 20px; text-align:center; }
+.logo { font-size:clamp(26px,6vw,42px); font-weight:900; letter-spacing:1px; }
+.logo span { color:var(--cyan); text-shadow:0 0 20px #45f3ff55; }
+header p,.muted { color:var(--muted); line-height:1.6; }
+nav {
+  display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+  padding:10px 12px 20px;
+}
+nav a {
+  color:var(--cyan); text-decoration:none; border:1px solid var(--line);
+  padding:8px 12px; border-radius:999px; font-size:13px;
+}
+main { width:min(1100px,100%); margin:auto; padding:0 14px 40px; }
+section { margin:20px 0 30px; scroll-margin-top:12px; }
+h2 { font-size:23px; margin:0 0 14px; }
+h3 { margin:0 0 12px; font-size:17px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:14px; }
+.tool,.hero-card {
+  background:linear-gradient(145deg,#131d33,#0e1424);
+  border:1px solid var(--line); border-radius:17px; padding:17px;
+  box-shadow:0 8px 30px #0002;
+}
+.hero-card { border-color:#285064; }
+label { display:block; margin:12px 0 6px; color:#c5d5f2; font-size:14px; }
+input,textarea,select {
+  display:block; width:100%; padding:12px; border-radius:10px;
+  border:1px solid #30415f; background:#080e1d; color:var(--text);
+  font:inherit; outline:none;
+}
+input:focus,textarea:focus,select:focus { border-color:var(--cyan); }
+textarea { min-height:100px; resize:vertical; }
+button,.button {
+  display:inline-block; border:0; border-radius:10px; padding:11px 14px;
+  margin-top:10px; background:linear-gradient(90deg,#45f3ff,#a879ff);
+  color:#08101e; font-weight:800; cursor:pointer; text-decoration:none;
+}
+button:disabled { opacity:.55; cursor:wait; }
+button.secondary { background:#1a2841; color:var(--text); border:1px solid var(--line); }
+.status { color:var(--green); font-size:14px; overflow-wrap:anywhere; }
+.result { overflow-wrap:anywhere; padding:10px; border-radius:9px; background:#080e1d; margin-top:10px; }
+.muted { font-size:13px; }
+a { color:var(--cyan); overflow-wrap:anywhere; }
+hr { border:0; border-top:1px solid var(--line); margin:18px 0; }
+video,iframe { max-width:100%; width:100%; border:0; border-radius:12px; }
+iframe { aspect-ratio:16/9; }
+.stars { display:flex; gap:6px; flex-wrap:wrap; }
+.star { background:#202b43; color:#ffd66b; font-size:24px; padding:4px 10px; }
+.star.active { background:#4b3c1a; }
+.feedback-item { border-bottom:1px solid var(--line); padding:12px 0; overflow-wrap:anywhere; }
+footer { text-align:center; padding:25px 15px 40px; color:var(--muted); font-size:13px; }
+[hidden] { display:none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⚡ LANDADA <span>TOOLS MEN</span></div>
+  <p>Tools praktis, media, dan utilitas dalam satu website.</p>
+</header>
+
+<nav>
+  <a href="#tools">Tools</a>
+  <a href="#downloader">Downloader</a>
+  <a href="#youtube">YouTube Player</a>
+  <a href="#feedback">Rating & Komentar</a>
+</nav>
+
+<main>
+<section class="hero-card">
+  <h2>🚀 Selamat datang!</h2>
+  <p class="muted">Pilih tools yang lu butuhin. Website ini dibuat ringan dan nyaman dipakai di HP.</p>
+</section>
+
+<section id="tools">
+  <h2>🧰 Tools Collection</h2>
+  <div class="grid">
+
+    <div class="tool">
+      <h3>✍️ Text Formatter</h3>
+      <textarea id="textInput" placeholder="Tulis atau tempel teks di sini..."></textarea>
+      <div class="grid">
+        <button onclick="formatText('upper')">HURUF BESAR</button>
+        <button onclick="formatText('lower')">huruf kecil</button>
+        <button class="secondary" onclick="formatText('title')">Title Case</button>
+        <button class="secondary" onclick="formatText('reverse')">Balik Teks</button>
+      </div>
+      <button class="secondary" onclick="copyValue('textInput')">Salin teks</button>
+    </div>
+
+    <div class="tool">
+      <h3>🧩 JSON Formatter</h3>
+      <textarea id="jsonInput" placeholder='Tempel JSON, contoh: {"nama":"Landada"}'></textarea>
+      <button onclick="formatJSON()">Format JSON</button>
+      <button class="secondary" onclick="minifyJSON()">Minify JSON</button>
+      <pre id="jsonOutput" class="result" style="white-space:pre-wrap"></pre>
+      <button class="secondary" onclick="copyText('jsonOutput')">Salin hasil</button>
+    </div>
+
+    <div class="tool">
+      <h3>🔐 Base64 Encoder / Decoder</h3>
+      <textarea id="baseInput" placeholder="Masukkan teks..."></textarea>
+      <button onclick="base64Convert('encode')">Encode</button>
+      <button class="secondary" onclick="base64Convert('decode')">Decode</button>
+      <textarea id="baseOutput" placeholder="Hasil..." readonly></textarea>
+      <button class="secondary" onclick="copyValue('baseOutput')">Salin hasil</button>
+    </div>
+
+    <div class="tool">
+      <h3>🔑 Password Generator</h3>
+      <label for="passLength">Panjang password</label>
+      <input id="passLength" type="number" min="6" max="128" value="16">
+      <label><input id="passSymbols" type="checkbox" checked style="display:inline;width:auto"> Pakai simbol</label>
+      <button onclick="generatePassword()">Buat Password</button>
+      <input id="passOutput" readonly placeholder="Password muncul di sini">
+      <button class="secondary" onclick="copyValue('passOutput')">Salin password</button>
+    </div>
+
+    <div class="tool">
+      <h3>📝 Word Counter</h3>
+      <textarea id="wordInput" placeholder="Masukkan teks..." oninput="countWords()"></textarea>
+      <p id="wordStats" class="result">0 kata · 0 karakter · 0 kalimat</p>
+    </div>
+
+    <div class="tool">
+      <h3>🔗 URL Encoder / Decoder</h3>
+      <textarea id="urlInput" placeholder="Masukkan URL atau teks..."></textarea>
+      <button onclick="urlConvert('encode')">Encode URL</button>
+      <button class="secondary" onclick="urlConvert('decode')">Decode URL</button>
+      <textarea id="urlOutput" placeholder="Hasil..." readonly></textarea>
+      <button class="secondary" onclick="copyValue('urlOutput')">Salin hasil</button>
+    </div>
+
+    <div class="tool">
+      <h3>🆔 UUID Generator</h3>
+      <button onclick="makeUUID()">Buat UUID</button>
+      <input id="uuidOutput" readonly placeholder="UUID muncul di sini">
+      <button class="secondary" onclick="copyValue('uuidOutput')">Salin UUID</button>
+    </div>
+
+    <div class="tool">
+      <h3>🎨 Color Picker</h3>
+      <input id="colorInput" type="color" value="#45f3ff" oninput="showColor()">
+      <p id="colorOutput" class="result">#45F3FF</p>
+      <div id="colorPreview" style="height:50px;border-radius:10px;background:#45f3ff"></div>
+      <button class="secondary" onclick="copyText('colorOutput')">Salin kode warna</button>
+    </div>
+
+    <div class="tool">
+      <h3>⏱️ Unix Timestamp</h3>
+      <button onclick="getTimestamp()">Ambil waktu sekarang</button>
+      <input id="timestampOutput" readonly placeholder="Timestamp">
+      <label for="timestampInput">Konversi timestamp ke tanggal</label>
+      <input id="timestampInput" placeholder="Contoh: 1790000000">
+      <button class="secondary" onclick="convertTimestamp()">Konversi</button>
+      <p id="timestampDate" class="result"></p>
+    </div>
+
+  </div>
+</section>
+
+<section id="downloader">
+  <div class="hero-card">
+    <h2>📥 Landada Media Downloader</h2>
+    <p class="muted">YouTube dan TikTok · MP4 dan MP3</p>
+    <label for="mediaUrl">Tempel link YouTube / TikTok</label>
+    <input id="mediaUrl" type="url" placeholder="https://...">
+    <div class="grid">
+      <div>
+        <label for="mediaFormat">Format</label>
+        <select id="mediaFormat">
+          <option value="mp4">🎬 Video MP4</option>
+          <option value="mp3">🎵 Audio MP3</option>
+        </select>
+      </div>
+      <div>
+        <label for="mediaQuality">Kualitas video</label>
+        <select id="mediaQuality">
+          <option value="720">720p</option>
+          <option value="1080">1080p</option>
+          <option value="480">480p</option>
+          <option value="360">360p</option>
+        </select>
+      </div>
+    </div>
+    <button id="mediaDownloadBtn" onclick="processDownload()">🔎 Proses Download</button>
+    <p id="mediaStatus" class="status" aria-live="polite"></p>
+    <div id="mediaResults"></div>
+    <p class="muted">Fitur download memerlukan backend yang dikonfigurasi. Gunakan hanya konten yang lu miliki atau diizinkan untuk diunduh.</p>
+  </div>
+</section>
+
+<section id="youtube">
+  <h2>▶️ YouTube Player</h2>
+  <div class="tool">
+    <label for="ytUrl">Link video YouTube</label>
+    <input id="ytUrl" type="url" placeholder="https://www.youtube.com/watch?v=...">
+    <button onclick="playYouTube()">Putar Video</button>
+    <div id="ytPlayer" style="margin-top:14px"></div>
+    <hr>
+    <h3>Buka link video</h3>
+    <input id="videoLink" type="url" placeholder="Tempel link video yang ingin dibuka">
+    <button class="secondary" onclick="openVideoLink()">Buka link</button>
+  </div>
+</section>
+
+<section id="feedback">
+  <h2>⭐ Rating & Komentar</h2>
+  <div class="tool">
+    <p class="muted">Kasih rating dan masukan untuk Landada Tools Men.</p>
+    <label for="displayName">Nama tampilan (opsional)</label>
+    <input id="displayName" maxlength="40" placeholder="Nama lu">
+    <label>Pilih rating</label>
+    <div class="stars" id="starButtons">
+      <button class="star active" data-rating="1" aria-label="1 bintang">★</button>
+      <button class="star" data-rating="2" aria-label="2 bintang">★</button>
+      <button class="star" data-rating="3" aria-label="3 bintang">★</button>
+      <button class="star" data-rating="4" aria-label="4 bintang">★</button>
+      <button class="star" data-rating="5" aria-label="5 bintang">★</button>
+    </div>
+    <label for="feedbackMessage">Komentar</label>
+    <textarea id="feedbackMessage" maxlength="1000" placeholder="Tulis komentar atau saran..."></textarea>
+    <button id="feedbackSubmit" onclick="submitFeedback()">Kirim Rating</button>
+    <p id="feedbackStatus" class="status" aria-live="polite"></p>
+    <hr>
+    <h3>💬 Komentar terbaru</h3>
+    <button class="secondary" onclick="loadFeedback()">Muat ulang komentar</button>
+    <div id="feedbackList" class="result">Memuat komentar...</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p>⚡ Landada Tools Men</p>
+  <p>Gunakan tools secara bertanggung jawab.</p>
+</footer>
+
+<script>
+"use strict";
+
+/* ===== TEXT FORMATTER ===== */
+function formatText(mode) {
+  const el = document.getElementById("textInput");
+  const s = el.value;
+  if (mode === "upper") el.value = s.toUpperCase();
+  if (mode === "lower") el.value = s.toLowerCase();
+  if (mode === "reverse") el.value = [...s].reverse().join("");
+  if (mode === "title") {
+    el.value = s.toLowerCase().replace(/\b\p{L}/gu, c => c.toUpperCase());
+  }
+}
+
+/* ===== COPY ===== */
+async function copyText(id) {
+  const el = document.getElementById(id);
+  const value = el ? (("value" in el) ? el.value : el.textContent) : "";
+  try {
+    await navigator.clipboard.writeText(value);
+    alert("Berhasil disalin!");
+  } catch {
+    alert("Gagal menyalin. Pilih teks lalu salin manual.");
+  }
+}
+function copyValue(id) { copyText(id); }
+
+/* ===== JSON ===== */
+function formatJSON() {
+  try {
+    const v = JSON.parse(document.getElementById("jsonInput").value);
+    document.getElementById("jsonOutput").textContent = JSON.stringify(v, null, 2);
+  } catch (e) {
+    document.getElementById("jsonOutput").textContent = "JSON tidak valid: " + e.message;
+  }
+}
+function minifyJSON() {
+  try {
+    const v = JSON.parse(document.getElementById("jsonInput").value);
+    document.getElementById("jsonOutput").textContent = JSON.stringify(v);
+  } catch (e) {
+    document.getElementById("jsonOutput").textContent = "JSON tidak valid: " + e.message;
+  }
+}
+
+/* ===== BASE64 UTF-8 ===== */
+function base64Convert(mode) {
+  const input = document.getElementById("baseInput").value;
+  try {
+    if (mode === "encode") {
+      const bytes = new TextEncoder().encode(input);
+      let binary = "";
+      bytes.forEach(b => binary += String.fromCharCode(b));
+      document.getElementById("baseOutput").value = btoa(binary);
+    } else {
+      const binary = atob(input.trim());
+      const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+      document.getElementById("baseOutput").value = new TextDecoder().decode(bytes);
+    }
+  } catch {
+    document.getElementById("baseOutput").value = "Input tidak valid.";
+  }
+}
+
+/* ===== PASSWORD ===== */
+function generatePassword() {
+  const len = Math.max(6, Math.min(128, Number(document.getElementById("passLength").value) || 16));
+  let chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  if (document.getElementById("passSymbols").checked) chars += "!@#$%^&*()-_=+?";
+  const bytes = new Uint32Array(len);
+  crypto.getRandomValues(bytes);
+  document.getElementById("passOutput").value =
+    Array.from(bytes, n => chars[n % chars.length]).join("");
+}
+
+/* ===== WORD COUNTER ===== */
+function countWords() {
+  const s = document.getElementById("wordInput").value;
+  const words = s.trim() ? s.trim().split(/\s+/u).length : 0;
+  const sentences = s.trim() ? (s.match(/[.!?]+(?=\s|$)/g) || []).length : 0;
+  document.getElementById("wordStats").textContent =
+    words + " kata · " + s.length + " karakter · " + sentences + " kalimat";
+}
+
+/* ===== URL ===== */
+function urlConvert(mode) {
+  const input = document.getElementById("urlInput").value;
+  try {
+    document.getElementById("urlOutput").value =
+      mode === "encode" ? encodeURIComponent(input) : decodeURIComponent(input);
+  } catch {
+    document.getElementById("urlOutput").value = "URL tidak valid.";
+  }
+}
+
+/* ===== UUID ===== */
+function makeUUID() {
+  document.getElementById("uuidOutput").value =
+    crypto.randomUUID ? crypto.randomUUID() :
+    "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16;
+      return (c === "x" ? r : (r & 3 | 8)).toString(16);
+    });
+}
+
+/* ===== COLOR ===== */
+function showColor() {
+  const c = document.getElementById("colorInput").value.toUpperCase();
+  document.getElementById("colorOutput").textContent = c;
+  document.getElementById("colorPreview").style.background = c;
+}
+
+/* ===== TIMESTAMP ===== */
+function getTimestamp() {
+  document.getElementById("timestampOutput").value = Math.floor(Date.now() / 1000);
+}
+function convertTimestamp() {
+  const n = Number(document.getElementById("timestampInput").value);
+  const out = document.getElementById("timestampDate");
+  if (!Number.isFinite(n)) { out.textContent = "Timestamp tidak valid."; return; }
+  const ms = Math.abs(n) < 1e12 ? n * 1000 : n;
+  const d = new Date(ms);
+  out.textContent = Number.isNaN(d.getTime()) ? "Tanggal tidak valid." : d.toLocaleString();
+}
+
+/* ===== YOUTUBE PLAYER ===== */
+function getYouTubeId(value) {
+  try {
+    const u = new URL(value);
+    if (u.hostname === "youtu.be" || u.hostname.endsWith(".youtu.be")) {
+      return u.pathname.split("/").filter(Boolean)[0] || "";
+    }
+    if (u.hostname.includes("youtube.com")) {
+      if (u.searchParams.get("v")) return u.searchParams.get("v");
+      const parts = u.pathname.split("/").filter(Boolean);
+      if (["shorts", "embed", "live"].includes(parts[0])) return parts[1] || "";
+    }
+  } catch {}
+  return "";
+}
+function playYouTube() {
+  const id = getYouTubeId(document.getElementById("ytUrl").value.trim());
+  const box = document.getElementById("ytPlayer");
+  box.replaceChildren();
+  if (!/^[\w-]{11}$/.test(id)) {
+    box.textContent = "Link YouTube tidak valid.";
+    return;
+  }
+  const frame = document.createElement("iframe");
+  frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id);
+  frame.title = "YouTube video player";
+  frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  frame.allowFullscreen = true;
+  box.appendChild(frame);
+}
+function openVideoLink() {
+  try {
+    const u = new URL(document.getElementById("videoLink").value.trim());
+    if (u.protocol !== "https:") throw new Error();
+    window.open(u.href, "_blank", "noopener,noreferrer");
+  } catch {
+    alert("Masukkan link HTTPS yang valid.");
+  }
+}
+
+/* ===== MEDIA DOWNLOADER ===== */
+function validMediaUrl(value) {
+  try {
+    const u = new URL(value);
+    const h = u.hostname.toLowerCase();
+    return u.protocol === "https:" &&
+      (h === "youtube.com" || h.endsWith(".youtube.com") ||
+       h === "youtu.be" || h === "tiktok.com" || h.endsWith(".tiktok.com"));
+  } catch { return false; }
+}
+function addMediaLink(url, label) {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:") return;
+    const a = document.createElement("a");
+    a.href = u.href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.className = "button";
+    a.textContent = label;
+    a.style.display = "block";
+    document.getElementById("mediaResults").appendChild(a);
+  } catch {}
+}
+async function processDownload() {
+  const url = document.getElementById("mediaUrl").value.trim();
+  const format = document.getElementById("mediaFormat").value;
+  const quality = document.getElementById("mediaQuality").value;
+  const status = document.getElementById("mediaStatus");
+  const results = document.getElementById("mediaResults");
+  const btn = document.getElementById("mediaDownloadBtn");
+  results.replaceChildren();
+
+  if (!validMediaUrl(url)) {
+    status.textContent = "Masukkan link HTTPS YouTube atau TikTok yang valid.";
+    return;
+  }
+
+  btn.disabled = true;
+  status.textContent = "Sedang menghubungi backend...";
+  try {
+    const response = await fetch("/.netlify/functions/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, format, quality })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Backend gagal.");
+
+    if (["tunnel", "redirect"].includes(data.status) && data.url) {
+      addMediaLink(data.url, format === "mp3" ? "⬇️ Download MP3" : "⬇️ Download MP4");
+    } else if (data.status === "picker" && Array.isArray(data.picker)) {
+      data.picker.forEach((item, i) => {
+        if (item.url) addMediaLink(item.url, "⬇️ Pilihan " + (i + 1));
+      });
+    } else {
+      throw new Error(data.error || data.text || "Tidak ada file yang tersedia.");
+    }
+    status.textContent = results.childElementCount
+      ? "Selesai! Tekan tombol download di atas."
+      : "Backend tidak mengembalikan link file.";
+  } catch (e) {
+    status.textContent = "Belum berhasil: " + (e.message || "Periksa backend.");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ===== SUPABASE RATING & FEEDBACK ===== */
+const SUPABASE_URL = "https://slylhlmizkjleqdzgdhc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_lPEUcrnl2-LGPkf13yhMng_H25tdwBG";
+let selectedRating = 1;
+
+document.querySelectorAll("#starButtons .star").forEach(btn => {
+  btn.addEventListener("click", () => {
+    selectedRating = Number(btn.dataset.rating);
+    document.querySelectorAll("#starButtons .star").forEach(star => {
+      star.classList.toggle("active", Number(star.dataset.rating) <= selectedRating);
+    });
+  });
+});
+
+async function supabaseRequest(path, options = {}) {
+  const response = await fetch(SUPABASE_URL + "/rest/v1/" + path, {
+    ...options,
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  }) 
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Supabase request gagal.");
+  }
+  if (response.status === 204) return null;
+  return response.json();
+}
+
+async function submitFeedback() {
+  const name = document.getElementById("displayName").value.trim().slice(0, 40) || "Anonim";
+  const message = document.getElementById("feedbackMessage").value.trim();
+  const status = document.getElementById("feedbackStatus");
+  const btn = document.getElementById("feedbackSubmit");
+
+  if (!message) {
+    status.textContent = "Tulis komentar dulu ya.";
+    return;
+  }
+
+  btn.disabled = true;
+  status.textContent = "Mengirim...";
+
+  try {
+    await supabaseRequest("site_feedback", {
+      method: "POST",
+      headers: { "Prefer": "return=minimal" },
+      body: JSON.stringify({
+        display_name: name,
+        rating: selectedRating,
+        message: message
+      })
+    });
+
+    document.getElementById("feedbackMessage").value = "";
+    status.textContent = "Rating berhasil dikirim! Makasih jir 🙌";
+    await loadFeedback();
+  } catch (e) {
+    status.textContent = "Gagal mengirim. Periksa tabel dan policy Supabase.";
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function loadFeedback() {
+  const box = document.getElementById("feedbackList");
+  box.textContent = "Memuat komentar...";
+
+  try {
+    const items = await supabaseRequest(
+      "site_feedback?select=display_name,rating,message,created_at&order=created_at.desc&limit=20"
+    );
+
+    box.replaceChildren();
+
+    if (!items || !items.length) {
+      box.textContent = "Belum ada komentar.";
+      return;
+    }
+
+    items.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "feedback-item";
+
+      const title = document.createElement("strong");
+      title.textContent = (item.display_name || "Anonim") +
+        " · " + "★".repeat(Math.max(0, Math.min(5, Number(item.rating) || 0)));
+
+      const msg = document.createElement("p");
+      msg.textContent = item.message || "";
+      msg.style.whiteSpace = "pre-wrap";
+
+      const date = document.createElement("small");
+      date.className = "muted";
+      const parsed = item.created_at ? new Date(item.created_at) : null;
+      date.textContent = parsed && !Number.isNaN(parsed.getTime())
+        ? parsed.toLocaleString()
+        : "";
+
+      div.append(title, msg, date);
+      box.appendChild(div);
+    });
+  } catch (e) {
+    box.textContent = "Komentar belum bisa dimuat. Periksa koneksi atau policy SELECT Supabase.";
+    console.error(e);
+  }
+}
+
+showColor();
+loadFeedback();
+</script>
+</body>
+</html>
