@@ -445,7 +445,7 @@ function addMediaLink(url, label) {
 }
 
 async function processDownload() {
-  const url = document.getElementById("mediaUrl").value.trim();
+  const url = document.getElenmentById("mediaUrl").value.trim();
   const format = document.getElementById("mediaFormat").value;
   const quality = document.getElementById("mediaQuality").value;
   const status = document.getElementById("mediaStatus");
@@ -469,7 +469,18 @@ async function processDownload() {
       params.toString();
 
     const response = await fetch(endpoint);
-    const data = await response.json();
+const raw = await response.text();
+
+let data;
+try {
+  data = JSON.parse(raw);
+} catch {
+  throw new Error(
+    "HTTP " + response.status +
+    " — Server bukan JSON: " +
+    raw.slice(0, 140).replace(/\s+/g, " ")
+  );
+}
 
     if (!response.ok || data.success === false) {
       throw new Error(data.error || "Backend gagal memproses link.");
